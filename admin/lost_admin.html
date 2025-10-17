@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Lost Items Panel</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+    <style>
+      /* ------------------ General ------------------ */
+      body {
+        margin: 0;
+        background-color: #f4f6f8;
+        min-height: 100vh;
+        font-family: "Poppins", sans-serif;
+        color: #333;
+      }
+
+      /* ------------------ Navigation Bar ------------------ */
+      nav {
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        background-color: #1f2f44;
+        color: white;
+        font-weight: bold;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        flex-wrap: wrap;
+        position: relative;
+      }
+
+      .nav-left,
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: clamp(10px, 3vw, 20px);
+      }
+
+      .logo {
+        height: 50px;
+        width: 50px;
+        border-radius: 8px;
+      }
+
+      .name {
+        font-size: clamp(20px, 4vw, 35px);
+        letter-spacing: 1px;
+        color: white;
+        cursor: default;
+      }
+
+      .fa-solid {
+        font-size: clamp(25px, 5vw, 40px);
+        padding: 10px;
+        cursor: pointer;
+        color: #ffffff;
+        transition: all 0.3s ease;
+        border-radius: 50%;
+      }
+
+      .fa-solid:hover {
+        transform: scale(1.2);
+      }
+/* ------------------ Back Arrow ------------------ */
+      .back {
+        margin: 20px 0 0 25px;
+      }
+
+      .back a i {
+        color: #16263b;
+        font-size: 28px;
+        transition: color 0.3s ease, transform 0.3s ease;
+      }
+
+      .back a i:hover {
+        color: #4da6ff;
+        transform: translateX(-5px);
+      }
+
+/* ------------------ Lost Items Grid - Dark Cards ------------------ */
+#lostItemsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin: 30px;
+  padding: 10px;
+}
+
+/* ------------------ Card Layout ------------------ */
+.item-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-radius: 12px;
+  padding: 16px;
+  background: #1f2f44; /* dark background */
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  text-align: left;
+  color: #e0e7ff; /* light text */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.item-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+}
+
+/* ------------------ Image Styling ------------------ */
+.item-card img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid #4da6ff; /* subtle accent */
+  flex-shrink: 0;
+}
+
+/* ------------------ Info Styling ------------------ */
+.item-info {
+  flex: 1;
+}
+
+.item-info h3 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  color: #82c7ff; /* light blue title */
+}
+
+.item-info p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #dbeafe; /* lighter text */
+}
+
+.item-info p strong {
+  color: #ffffff; /* labels stand out */
+}
+
+/* ------------------ Responsive Design ------------------ */
+@media (max-width: 600px) {
+  .item-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .item-card img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="nav-left">
+        <img src="/images/logo.png" class="logo" />
+        <span class="name">ClaimConnect</span>
+      </div>
+      <div class="nav-right">
+        <a href="/main/login.html"><i class="fa-solid fa-circle-user" id="profile"></i></a>
+      </div>
+    </nav>
+    <div class="back">
+      <a href="admin.html"><i class="fa-solid fa-arrow-left"></i></a>
+    </div>
+
+    <!-- Container for lost items -->
+    <div id="lostItemsContainer"
+      style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 20px;">
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      async function fetchLostItems() {
+        try {
+          const res = await axios.get("http://localhost:3000/api/lost-items");
+          const lostItems = res.data;
+          const container = document.getElementById("lostItemsContainer");
+          container.innerHTML = "";
+
+ lostItems.forEach(item => {
+  const card = document.createElement("div");
+  card.className = "item-card";
+  
+
+  // Image
+  const img = document.createElement("img");
+  img.src = item.image ? "http://localhost:3000" + item.image : "/images/placeholder.png";
+  img.alt = item.item_name;
+  img.className = "uploaded-img";
+  card.appendChild(img);
+
+  // ✅ Item details
+const info = document.createElement('div');
+info.className = 'item-info';
+info.innerHTML = `
+  <h3>${item.item_name}</h3>
+  <p><strong>Owner:</strong> ${item.owner_name}</p>
+  <p><strong>Contact:</strong> ${item.contact_no}</p>
+  <p><strong>Location:</strong> ${item.location}</p>
+  <p><strong>Date Lost:</strong> ${new Date(item.date_lost).toLocaleDateString()}</p>
+`;
+card.appendChild(info);
+
+
+  container.appendChild(card);
+});
+        } catch (error) {
+          console.error("Error fetching lost items:", error);
+        }
+      }
+
+      window.onload = fetchLostItems;
+    </script>
+  </body>
+</html>

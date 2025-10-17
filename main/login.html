@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login Form</title>
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #1f2f44;
+    }
+
+    .login-form {
+      background: rgba(255, 255, 255, 0.8);
+      border: 3px solid rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      border-radius: 16px;
+      backdrop-filter: blur(25px);
+      text-align: center;
+      color: #333;
+      width: 400px;
+      box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .login-title {
+      font-size: 40px;
+      margin-bottom: 40px;
+    }
+
+    .input-box {
+      margin: 20px 0;
+      position: relative;
+    }
+
+    .input-box input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.7);
+      border: none;
+      padding: 12px 12px 12px 45px;
+      border-radius: 99px;
+      outline: 3px solid transparent;
+      transition: 0.3s;
+      font-size: 17px;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .input-box input::placeholder {
+      color: rgba(51, 51, 51, 0.8);
+      font-size: 17px;
+      font-weight: 500;
+    }
+
+    .input-box input:focus {
+      outline: 3px solid rgba(0, 0, 0, 0.3);
+    }
+
+    .input-box i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      color: rgba(51, 51, 51, 0.8);
+    }
+
+    .remember-forgot-box {
+      display: flex;
+      justify-content: space-between;
+      margin: 20px 0;
+      font-size: 15px;
+    }
+
+    .remember-forgot-box a {
+      color: #333;
+      text-decoration: none;
+    }
+
+    .remember-forgot-box a:hover {
+      text-decoration: underline;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 10px 0;
+      background: #333;
+      border: none;
+      border-radius: 99px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .login-btn:hover {
+      background: #000;
+    }
+
+    .register {
+      margin-top: 15px;
+      font-size: 15px;
+    }
+
+    .register a {
+      color: #333;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .register a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <form class="login-form" id="loginForm">
+    <h1 class="login-title">Login</h1>
+
+    <div class="input-box">
+      <i class="bx bxs-user"></i>
+      <input type="email" id="email" placeholder="Email" required />
+    </div>
+
+    <div class="input-box">
+      <i class="bx bxs-lock-alt"></i>
+      <input type="password" id="password" placeholder="Password" required />
+    </div>
+
+    <div class="remember-forgot-box">
+      <a href="forgot_pass.html" id="forgotLink">Forgot Password?</a>
+    </div>
+
+    <button type="submit" class="login-btn">Login</button>
+
+    <p class="register">
+      Don't have an account?
+      <a href="register.html">Register</a>
+    </p>
+  </form>
+
+  <script>
+    const form = document.getElementById("loginForm");
+    const forgotLink = document.getElementById("forgotLink");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      // Admin login (hardcoded)
+      if (email === "admin@gmail.com") {
+        if (password === "admin") {
+          localStorage.setItem("email", email);
+          window.location.href = "/admin/admin.html";
+        } else {
+          alert("Incorrect password for admin.");
+        }
+        return;
+      }
+
+      // Normal user login via backend
+      try {
+        const response = await fetch("http://localhost:3000/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Save email to localStorage to pass to other pages
+          localStorage.setItem("email", data.user.email);
+          localStorage.setItem("username", data.user.email);
+          window.location.href = "index.html";
+        } else {
+          alert(data.message || "Invalid email or password");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Server error. Please try again.");
+      }
+    });
+
+    // Pass email to forgot password page if user clicks it
+    forgotLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value.trim();
+      if (email) localStorage.setItem("email", email);
+      window.location.href = "forgot_pass.html";
+    });
+  </script>
+</body>
+
+</html>

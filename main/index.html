@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ClaimConnect — Home</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+
+<style>
+  /* =================== NAVBAR =================== */
+/* =================== FIXED NAVBAR =================== */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between; /* Push left and right to edges */
+  align-items: center;
+  padding: 10px 40px; /* Even horizontal spacing */
+  background-color: #1f2f44;
+  color: white;
+  z-index: 1000;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+}
+
+/* Left section (Logo + Title) */
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: flex-start;
+}
+
+/* Logo styling */
+.nav-left .logo {
+  height: 40px;
+  width: auto;
+  display: block;
+}
+
+/* Right section (Links / Buttons) */
+.nav-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 15px;
+}
+
+
+ /* ------------------ Notification Button ------------------ */
+.notification-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.notification-bar button {
+  background-color: #2d4a72; /* dark blue */
+  color: #fff;
+  padding: 2px 4px; /* small padding as requested */
+  border: none;
+  border-radius: 20px; /* slightly rounded */
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+  font-size: 13px; /* smaller font to fit padding */
+}
+
+.notification-bar button:hover {
+  background-color: #3b61a2; /* lighter blue hover */
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+}
+
+/* Notification badge */
+.notification-bar .badge {
+  background-color: #ff4d4d; /* red for unread */
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: bold;
+  border-radius: 50%;
+  padding: 2px 5px; /* smaller to match button size */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  transition: all 0.2s ease;
+}
+
+/* ------------------ Dropdown ------------------ */
+.notif-dropdown {
+  display: none;
+  position: absolute;
+  top: 36px; /* closer to small button */
+  right: 0;
+  background-color: #fff;
+  color: #111827;
+  border-radius: 12px;
+  max-height: 350px;
+  width: 300px; /* slightly smaller for compact button */
+  overflow-y: auto;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  z-index: 1000;
+  padding: 6px 0;
+  border: 1px solid #e5e7eb;
+}
+
+/* Show dropdown */
+.notif-dropdown.show {
+  display: block;
+  animation: dropdownFade 0.25s ease;
+}
+
+@keyframes dropdownFade {
+  0% { opacity: 0; transform: translateY(-5px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Notification items */
+.notif-item {
+  padding: 10px 14px;
+  border-bottom: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 13px; /* smaller font for compact dropdown */
+  color: #1f2937;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 6px; /* slightly rounded */
+}
+
+.notif-item:hover {
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+.notif-item.unread {
+  background-color: #e6f0ff;
+  font-weight: 600;
+}
+
+/* Scrollbar styling for dropdown */
+.notif-dropdown::-webkit-scrollbar {
+  width: 5px;
+}
+
+.notif-dropdown::-webkit-scrollbar-thumb {
+  background-color: rgba(77, 166, 255, 0.5);
+  border-radius: 3px;
+}
+
+.notif-dropdown::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+
+
+  /* =================== MAIN CONTENT =================== */
+  /* =================== MAIN CONTENT =================== */
+body {
+  background-color: #f4f6f8; /* Light, fresh background */
+  font-family: "Poppins", sans-serif;
+  color: #111827;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center horizontally */
+  min-height: 100vh;
+}
+
+.home-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center inner content horizontally */
+  justify-content: center; /* Center vertically */
+  text-align: center;
+  padding: 40px 20px;
+  width: 100%;
+  max-width: 1000px; /* Limit width for better readability */
+  box-sizing: border-box;
+}
+
+
+  .home-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+
+  .home-header p {
+    margin-top: 0;
+    color: #555;
+  }
+
+  /* =================== Buttons =================== */
+  .button-group a {
+    display: inline-block;
+    margin-right: 15px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    background-color: #2d4a72;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+
+  .button-group a:hover {
+    background-color: #34d399; /* fresh green hover */
+  }
+
+  /* =================== Items Section =================== */
+  .items-section {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    margin: 30px 20px;
+  }
+
+  #lost-items, #found-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    flex: 1;
+  }
+
+  /* =================== ITEM CARDS =================== */
+.item-card {
+  display: flex;
+  align-items: flex-start;   /* Align content at the top */
+  gap: 16px;
+  border-radius: 12px;
+  padding: 12px 16px;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  transition: all 0.25s ease;
+  flex-direction: row;
+}
+
+.item-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+}
+
+.item-card img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+.item-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+}
+
+.item-info h3 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.item-info p {
+  margin: 2px 0;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.Verification-request {
+  background-color: #2563eb;  /* blue button */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 8px;
+  align-self: flex-start; /* button aligned to left */
+  transition: all 0.2s ease;
+}
+
+.Verification-request:hover {
+  background-color: #34d399; /* green hover */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* =================== RESPONSIVE =================== */
+@media (max-width: 768px) {
+  .item-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .item-card img {
+    width: 100%;
+    height: auto;
+  }
+
+  .Verification-request {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+
+  /* =================== RESPONSIVE =================== */
+  @media (max-width: 1024px) {
+    .items-section {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .items-section {
+      gap: 30px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .button-group a {
+      padding: 8px 16px;
+      font-size: 0.9rem;
+    }
+
+    .item-card {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .item-card img {
+      width: 100%;
+      height: auto;
+    }
+  }
+</style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+  <link rel="stylesheet" href="/css/admin.css" />
+  
+</head>
+
+<body>
+  <!-- NAVBAR -->
+  <nav>
+    <div class="nav-left">
+      <img src="/images/logo.png" class="logo" alt="Logo" />
+      <span class="name">ClaimConnect</span>
+    </div>
+
+    <div class="nav-right">
+      <!-- Notification button -->
+      <div class="notification-bar">
+        <button id="notif-btn">
+          <i class="fa-solid fa-bell"></i>
+          <span class="badge" id="notif-count">0</span>
+        </button>
+        <div id="notif-dropdown" class="notif-dropdown"></div>
+      </div>
+
+      <!-- Profile button -->
+      <a href="/main/login.html" title="Profile"><i class="fa-solid fa-circle-user"></i></a>
+    </div>
+  </nav>
+
+  <main class="home-container">
+    <header class="home-header">
+      <h2>Welcome to ClaimConnect</h2>
+      <p>Loading user info...</p>
+    </header>
+
+    <section class="button-group">
+      <a class="home-btn btn-lost" href="lostitem.html"><i class="fas fa-search"></i> Lost Items</a>
+      <a class="home-btn btn-found" href="found.html"><i class="fas fa-box"></i> Found Items</a>
+    </section>
+
+    <div class="items-section">
+      <div>
+        <a href="display_lost.html"><h3>Lost Items</h3></a>
+        <div id="lost-items"><p>Loading lost items...</p></div>
+      </div>
+      <div>
+        <a href="display_found.html"><h3>Found Items</h3></a>
+        <div id="found-items"><p>Loading found items...</p></div>
+      </div>
+    </div>
+  </main>
+<script>
+  // =================== User Info ===================
+  const email = localStorage.getItem("email");
+  if (email) {
+    document.querySelector(".home-header p").textContent = `Welcome, ${email}! Choose an option below.`;
+  }
+
+  // =================== Notification Dropdown ===================
+  const notifBtn = document.getElementById("notif-btn");
+  const notifDropdown = document.getElementById("notif-dropdown");
+
+  notifBtn.addEventListener("click", () => notifDropdown.classList.toggle("show"));
+  window.addEventListener("click", (e) => {
+    if (!notifBtn.contains(e.target) && !notifDropdown.contains(e.target)) {
+      notifDropdown.classList.remove("show");
+    }
+  });
+
+  async function fetchNotifications() {
+    if (!email) return;
+    try {
+      const res = await fetch(`http://localhost:3000/api/notifications/${email}`);
+      const notifications = await res.json();
+
+      notifDropdown.innerHTML = "";
+      notifications.forEach(notif => {
+        const div = document.createElement("div");
+        div.className = "notif-item" + (notif.is_read ? "" : " unread");
+        div.innerText = notif.message;
+
+        div.onclick = async () => {
+          await fetch(`http://localhost:3000/api/notifications/${notif.id}/read`, { method: "POST" });
+          fetchNotifications(); // Refresh notifications after marking as read
+        };
+
+        notifDropdown.appendChild(div);
+      });
+
+      // Update badge count
+      const countRes = await fetch(`http://localhost:3000/api/notifications/${email}/unread-count`);
+      const countData = await countRes.json();
+      document.getElementById("notif-count").innerText = countData.unread;
+
+    } catch (err) {
+      console.error("Error fetching notifications:", err);
+    }
+  }
+
+  fetchNotifications();
+  setInterval(fetchNotifications, 10000);
+
+  // =================== Recent Items ===================
+  async function fetchRecentItems() {
+  const lostContainer = document.getElementById('lost-items');
+  const foundContainer = document.getElementById('found-items');
+  lostContainer.innerHTML = '<p>Loading lost items...</p>';
+  foundContainer.innerHTML = '<p>Loading found items...</p>';
+
+  try {
+    const res = await fetch('http://localhost:3000/api/recent-items');
+    if (!res.ok) throw new Error("Failed to fetch recent items");
+    const data = await res.json();
+
+    lostContainer.innerHTML = '';
+    foundContainer.innerHTML = '';
+
+    data.forEach(item => {
+      const card = document.createElement("div");
+      card.className = "item-card";
+
+      // Only display image for lost items
+      if(item.type === 'lost') {
+        const img = document.createElement("img");
+        img.src = item.image ? "http://localhost:3000" + item.image : "/images/placeholder.png";
+        img.alt = item.item_name;
+        card.appendChild(img);
+      }
+
+      const info = document.createElement("div");
+      info.className = "item-info";
+      info.innerHTML = `
+        <h3>${item.item_name}</h3>
+        <p><strong>Location:</strong> ${item.location}</p>
+        <p><strong>Date:</strong> ${item.date ? new Date(item.date).toLocaleDateString() : 'N/A'}</p>
+      `;
+      card.appendChild(info);
+
+      // Only add verify button for found items
+      if(item.type === 'found') {
+        const btn = document.createElement("button");
+        btn.className = "Verification-request";
+        btn.textContent = "Verify item";
+        btn.onclick = () => alert(`Verifying: ${item.item_name}`);
+        card.appendChild(btn);
+      }
+
+      // Append to correct container
+      if(item.type === 'lost') lostContainer.appendChild(card);
+      else foundContainer.appendChild(card);
+    });
+
+    // If no items
+    if(!lostContainer.hasChildNodes()) lostContainer.innerHTML = '<p>No lost items found.</p>';
+    if(!foundContainer.hasChildNodes()) foundContainer.innerHTML = '<p>No found items found.</p>';
+
+  } catch (err) {
+    console.error(err);
+    lostContainer.innerHTML = '<p>Error loading lost items.</p>';
+    foundContainer.innerHTML = '<p>Error loading found items.</p>';
+  }
+}
+
+// Initial load and refresh every 10 seconds
+fetchRecentItems();
+setInterval(fetchRecentItems, 10000);
+
+</script>
+
+  </body>
+</html>

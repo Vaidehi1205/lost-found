@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lost & Found - Report Found Item</title>
+    <style>
+      /* ======== Reset & Common Styles ======== */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        margin: 0;
+        background-color: #1f2f44;
+        min-height: 100vh;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 100px;
+      }
+
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        background-color: #1f2f44;
+        color: white;
+        font-weight: bold;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+      }
+
+      .nav-left {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        font-size: 24px;
+        cursor: pointer;
+      }
+
+      .name {
+        font-size: 35px;
+        letter-spacing: 1px;
+        color: white;
+        cursor: default;
+      }
+
+      .logo {
+        height: 60px;
+        padding: 5px;
+        margin-left: 2px;
+      }
+/* ===== Back Arrow ===== */
+.back {
+  position: absolute; /* position relative to page */
+  top: 120px;         /* adjust vertical distance from top */
+  left: 2%;          /* center horizontally relative to page */
+  transform: translateX(-50%); /* truly center the arrow */
+  z-index: 100;       /* ensure it stays above form */
+}
+
+.back a i {
+  color: #013971; /* light color for dark form */
+  font-size: 28px;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.back a i:hover {
+  color: #4da6ff;
+  transform: translateX(-5px);
+}
+
+/* ===== Form Container ===== */
+.form-container {
+  background: #1e293b; /* dark blue-gray background */
+  border-radius: 20px;
+  padding: 35px 30px;
+  width: 420px;
+  max-width: 90%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(77, 166, 255, 0.3);
+  text-align: center;
+  color: #f0f4f8; /* light text */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-container:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(77, 166, 255, 0.5);
+}
+
+/* Form title */
+h3.form-title {
+  font-size: 28px;
+  margin-bottom: 25px;
+  color: #f0f4f8; /* light title text */
+  letter-spacing: 0.5px;
+}
+
+/* Labels */
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  text-align: left;
+  color: #cbd5e1; /* light gray text */
+  font-size: 14px;
+}
+
+/* Inputs & Textarea */
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.05); /* subtle dark input */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  outline: none;
+  color: #f0f4f8; /* light input text */
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  transition: 0.3s;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(240, 244, 248, 0.6); /* light placeholder */
+}
+
+input:focus,
+textarea:focus {
+  border-color: #4da6ff;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 8px rgba(77, 166, 255, 0.5);
+}
+
+/* Textarea */
+textarea {
+  border-radius: 16px;
+  resize: none;
+  min-height: 80px;
+}
+
+/* File input */
+input[type="file"] {
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  color: #f0f4f8;
+}
+
+/* Submit button */
+button {
+  width: 100%;
+  padding: 12px 0;
+  border-radius: 50px;
+  border: none;
+  background: #4da6ff;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+button:hover {
+  background: #82c7ff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(77, 166, 255, 0.4);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 500px) {
+  .form-container {
+    width: 90%;
+    padding: 25px 20px;
+  }
+
+  .name {
+    font-size: 24px;
+  }
+}
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/css/admin.css">
+  </head>
+
+  <body>
+    <nav>
+      <div class="nav-left">
+        <img src="/images/logo.png" class="logo" />
+        <span class="name">ClaimConnect</span>
+      </div>
+      <div class="nav-right">
+        <a href="login.html"><i class="fa-solid fa-circle-user" id="profile"></i></a>
+      </div>
+    </nav>
+
+    <div class="back">
+      <a href="index.html"><i class="fa-solid fa-arrow-left"></i></a>
+    </div>
+
+    <div class="form-container">
+      <h3 class="form-title">Report Found Item</h3>
+      <form id="foundItemForm" enctype="multipart/form-data">
+  <label for="finderName">Name of Finder</label>
+  <input
+    type="text"
+    id="finderName"
+    name="finderName"
+    placeholder="Enter finder name"
+    pattern="^[A-Za-z ]+$"
+    required
+  />
+
+  <label for="itemName">Item Name</label>
+  <input
+    type="text"
+    id="itemName"
+    name="itemName"
+    placeholder="Enter item name"
+    pattern="^[A-Za-z ]+$"
+    required
+  />
+
+  <label for="itemImage">Image (JPEG only)</label>
+  <input
+    type="file"
+    id="itemImage"
+    name="itemImage"
+    accept="image/jpeg"
+    required
+  />
+
+  <label for="foundLocation">Found Location</label>
+  <input
+    type="text"
+    id="foundLocation"
+    name="foundLocation"
+    placeholder="Enter location"
+    required
+  />
+
+  <label for="foundDate">Date Found</label>
+  <input type="date" id="foundDate" name="foundDate" required />
+
+  <label for="contactNo">Contact Number</label>
+  <input
+    type="tel"
+    id="contactNo"
+    name="contactNo"
+    placeholder="Enter 10-digit mobile number"
+    pattern="^[0-9]{10}$"
+    required
+  />
+
+  <button type="submit">Submit</button>
+</form>
+
+    </div>
+
+    <script>
+      document.getElementById("foundItemForm").addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const phone = document.getElementById("contactNo").value;
+  if (!/^\d{10}$/.test(phone)) {
+    alert("Mobile number must be exactly 10 digits.");
+    return;
+  }
+
+  const formData = new FormData(document.getElementById("foundItemForm"));
+
+  try {
+    const response = await fetch("http://localhost:3000/api/found-items", {
+      method: "POST",
+      body: formData,
+    });
+
+    const result = await response.json();
+    alert(result.message);
+
+    if (response.ok) {
+      document.getElementById("foundItemForm").reset();
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    alert("Something went wrong!");
+  }
+});
+    </script>
+  </body>
+</html>
