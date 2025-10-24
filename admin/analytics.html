@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analytics Dashboard</title>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- html2canvas -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+
+<style>
+/* ------------------ General ------------------ */
+      body {
+        margin: 0;
+        background-color: #f4f6f8;
+        min-height: 100vh;
+        font-family: "Poppins", sans-serif;
+        color: #333;
+      }
+
+      /* ------------------ Navigation Bar ------------------ */
+      nav {
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        background-color: #1f2f44;
+        color: white;
+        font-weight: bold;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        flex-wrap: wrap;
+        position: relative;
+      }
+
+      .nav-left,
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: clamp(10px, 3vw, 20px);
+      }
+
+      .logo {
+        height: 50px;
+        width: 50px;
+        border-radius: 8px;
+      }
+
+      .name {
+        font-size: clamp(20px, 4vw, 35px);
+        letter-spacing: 1px;
+        color: white;
+        cursor: default;
+      }
+
+      /* ✅ Fixed icons — removed circular background */
+      .fa-solid {
+        font-size: clamp(25px, 5vw, 35px);
+        cursor: pointer;
+        color: #ffffff;
+        transition: all 0.3s ease;
+        background: none;
+        border: none;
+        padding: 0;
+      }
+
+      .fa-solid:hover {
+        transform: scale(1.2);
+      }
+
+      /* ------------------ Back Arrow ------------------ */
+      .back {
+        margin: 20px 0 0 25px;
+      }
+
+      .back a i {
+        color: #16263b;
+        font-size: 28px;
+        transition: color 0.3s ease, transform 0.3s ease;
+      }
+
+      .back a i:hover {
+        color: #4da6ff;
+        transform: translateX(-5px);
+      }
+/* ------------------ Title ------------------ */
+h1 {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 2.2rem;
+    color: #0f172a;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+/* ------------------ Controls ------------------ */
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+select, button {
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+select {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+button {
+    background: #0f172a;
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+button:hover {
+    background: #1e40af;
+    transform: translateY(-2px);
+}
+
+/* ------------------ Chart Container ------------------ */
+canvas {
+            max-width: 800px;
+            margin: auto;
+            display: block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+</style>
+</head>
+
+<body>
+<nav>
+    <div class="nav-left">
+        <img src="/images/logo.png" class="logo" />
+        <span class="name">ClaimConnect</span>
+    </div>
+    <div class="nav-right">
+        <a href="/main/login.html"><i class="fa-solid fa-circle-user" id="profile"></i></a>
+    </div>
+</nav>
+
+<div class="back">
+  <a href="admin.html"><i class="fa-solid fa-arrow-left" id="arrow"></i></a>
+</div>
+
+<h1>ClaimConnect Analytics</h1>
+
+<div class="controls">
+    <select id="month">
+        <option value="1">January</option>
+        <option value="2">February</option>
+        <option value="3">March</option>
+        <option value="4">April</option>
+        <option value="5">May</option>
+        <option value="6">June</option>
+        <option value="7">July</option>
+        <option value="8">August</option>
+        <option value="9">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+    </select>
+
+    <select id="year"></select>
+
+    <button onclick="loadAnalytics()">Show Analytics</button>
+    <button onclick="downloadPDF()">Download PDF</button>
+</div>
+
+<canvas id="analyticsChart" width="400" height="200"></canvas>
+ <script>
+        // Populate year dropdown
+        const yearSelect = document.getElementById('year');
+        const currentYear = new Date().getFullYear();
+        for (let y = currentYear; y >= 2020; y--) {
+            const option = document.createElement('option');
+            option.value = y;
+            option.textContent = y;
+            yearSelect.appendChild(option);
+        }
+        yearSelect.value = currentYear;
+
+        let analyticsChart;
+        let chartImageData;
+
+        async function loadAnalytics() {
+    const month = document.getElementById('month').value;
+    const year = document.getElementById('year').value;
+
+    const res = await fetch(`http://localhost:3000/api/analytics?month=${month}&year=${year}`);
+    const data = await res.json();
+
+    // Updated labels and counts
+    const labels = ['Lost Items', 'Found Items', 'Accepted', 'Rejected'];
+    const counts = [data.lost, data.found, data.accepted, data.rejected];
+
+    if (analyticsChart) analyticsChart.destroy();
+
+    const ctx = document.getElementById('analyticsChart').getContext('2d');
+
+    // Gradients for 4 bars
+    const grad1 = ctx.createLinearGradient(0, 0, 0, 400);
+    grad1.addColorStop(0, '#f87171'); grad1.addColorStop(1, '#fca5a5');
+
+    const grad2 = ctx.createLinearGradient(0, 0, 0, 400);
+    grad2.addColorStop(0, '#34d399'); grad2.addColorStop(1, '#6ee7b7');
+
+    const grad3 = ctx.createLinearGradient(0, 0, 0, 400);
+    grad3.addColorStop(0, '#3b82f6'); grad3.addColorStop(1, '#60a5fa');
+
+    const grad4 = ctx.createLinearGradient(0, 0, 0, 400);
+    grad4.addColorStop(0, '#fbbf24'); grad4.addColorStop(1, '#fde68a');
+
+    analyticsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: `Analytics for ${month}/${year}`,
+                data: counts,
+                backgroundColor: [grad1, grad2, grad3, grad4],
+                borderRadius: 15,
+                hoverOffset: 10
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: true, position: 'top' },
+                tooltip: { mode: 'index', intersect: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 },
+                    grid: { color: 'rgba(0,0,0,0.05)' }
+                },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // Save chart image for PDF
+    chartImageData = document.getElementById('analyticsChart').toDataURL("image/png", 1.0);
+}
+
+        async function downloadPDF() {
+            const month = document.getElementById('month').value;
+            const year = document.getElementById('year').value;
+
+            const chartCanvas = document.getElementById('analyticsChart');
+
+            const canvas = await html2canvas(chartCanvas);
+            const chartImg = canvas.toDataURL('image/png', 1.0);
+
+            fetch(`http://localhost:3000/api/analytics-report`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chartImage: chartImg, month, year })
+            })
+            .then(res => res.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `analytics-${month}-${year}.pdf`;
+                a.click();
+            });
+        }
+
+        // Load initial analytics
+        loadAnalytics();
+    </script>
+</body>
+</html>

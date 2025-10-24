@@ -1,435 +1,476 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>ClaimConnect — Admin Panel</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-    />
-    <style>
-      /* ------------------ General ------------------ */
-      body {
-        margin: 0;
-        background-color: #f4f6f8;
-        min-height: 100vh;
-        font-family: "Poppins", sans-serif;
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>ClaimConnect — Admin Panel</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+  <style>
+    /* ------------------ General ------------------ */
+    body {
+      margin: 0;
+      background-color: #f4f6f8;
+      min-height: 100vh;
+      font-family: "Poppins", sans-serif;
+      color: #333;
+    }
+
+    /* ------------------ Navigation Bar ------------------ */
+    nav {
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      background-color: #1f2f44;
+      color: white;
+      font-weight: bold;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      flex-wrap: wrap;
+      position: relative;
+    }
+
+    .nav-left,
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: clamp(10px, 3vw, 20px);
+    }
+
+    .logo {
+      height: 50px;
+      width: 50px;
+      border-radius: 8px;
+    }
+
+    .name {
+      font-size: clamp(20px, 4vw, 35px);
+      letter-spacing: 1px;
+      color: white;
+      cursor: default;
+    }
+
+    .fa-solid {
+      font-size: clamp(25px, 5vw, 40px);
+      padding: 10px;
+      cursor: pointer;
+      color: #ffffff;
+      transition: all 0.3s ease;
+      border-radius: 50%;
+    }
+
+    .fa-solid:hover {
+      transform: scale(1.2);
+    }
+
+    /* ------------------ Hamburger Menu ------------------ */
+    .hamburger-menu {
+      position: absolute;
+      top: 80px;
+      right: 20px;
+      background: #1f2f44;
+      border-radius: 10px;
+      display: none;
+      flex-direction: column;
+      padding: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .hamburger-menu.active {
+      display: flex;
+    }
+
+    .hamburger-menu a {
+      color: white;
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .hamburger-menu a:hover {
+      background: #34d399;
+    }
+
+    /* ------------------ Header Section ------------------ */
+    .lost-found-container {
+      display: flex;
+      justify-content: center;
+      gap: clamp(20px, 6vw, 120px);
+      margin-top: 50px;
+      border-bottom: 1px solid #d1d5db;
+      flex-wrap: wrap;
+    }
+
+    .lost,
+    .found,
+    .user {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .lost .fa-solid,
+    .found .fa-solid,
+    .user .fa-solid {
+      font-size: clamp(40px, 10vw, 100px);
+      cursor: default;
+      color: #000000;
+      transition: transform 0.3s ease;
+    }
+
+    .lost .fa-solid:hover,
+    .found .fa-solid:hover,
+    .user .fa-solid:hover {
+      transform: scale(1.2);
+    }
+
+    .userCount,
+    .lostCount,
+    .foundCount {
+      margin-left: 8px;
+      color: #111827;
+      font-size: clamp(20px, 6vw, 50px);
+      font-weight: 700;
+    }
+
+    /* ------------------ Verification Cards - Dark Theme ------------------ */
+    .verifications {
+      background-color: #1f2f44;
+      border-radius: 12px;
+      padding: clamp(15px, 3vw, 20px);
+      margin: 20px;
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25);
+      color: #fff;
+      transition: all 0.3s ease;
+    }
+
+    .verifications .request {
+      font-size: clamp(16px, 3vw, 20px);
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: #dbeafe;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 10px;
+    }
+
+    #verification-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: flex-start;
+      padding: 10px 0;
+    }
+
+    .verification-card {
+      background: #2d3a50;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      padding: 15px;
+      width: 240px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+      color: #ffffff;
+    }
+
+    .verification-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .verification-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .verification-request {
+      background: rgba(77, 166, 255, 0.1);
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #e0e7ff;
+      width: 100%;
+      margin-bottom: 10px;
+      text-align: left;
+    }
+
+    .invoice-section {
+      margin-top: 6px;
+    }
+
+    .invoice-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(77, 166, 255, 0.2);
+      color: #82c7ff;
+      padding: 6px 10px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.3s ease;
+    }
+
+    .invoice-link:hover {
+      background: rgba(77, 166, 255, 0.35);
+      color: #fff;
+    }
+
+    .no-invoice {
+      color: #ccc;
+      font-size: 13px;
+      font-style: italic;
+    }
+
+    .btn-group button.accept {
+      background: #4caf50;
+      color: #fff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-right: 6px;
+    }
+
+    .btn-group button.accept:hover {
+      background: #45a049;
+    }
+
+    .btn-group button.reject {
+      background: #f44336;
+      color: #fff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn-group button.reject:hover {
+      background: #da190b;
+    }
+
+    /* ------------------ Responsive ------------------ */
+    @media (max-width: 768px) {
+      nav {
+        flex-direction: row;
+        height: auto;
+      }
+
+      .nav-right {
+        display: none;
+      }
+
+      .fa-bars {
+        display: block;
+        background-color: #ffffff;
         color: #333;
       }
 
-      /* ------------------ Navigation Bar ------------------ */
-      nav {
-        height: 80px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 20px;
-        background-color: #1f2f44;
-        color: white;
-        font-weight: bold;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        flex-wrap: wrap;
-        position: relative;
+      .lost-found-container {
+        gap: 30px;
+        margin-top: 30px;
       }
+    }
 
-      .nav-left,
-      .nav-right {
-        display: flex;
-        align-items: center;
-        gap: clamp(10px, 3vw, 20px);
-      }
-
-      .logo {
-        height: 50px;
-        width: 50px;
-        border-radius: 8px;
+    @media (max-width: 480px) {
+      .lost-found-container {
+        gap: 20px;
       }
 
       .name {
-        font-size: clamp(20px, 4vw, 35px);
-        letter-spacing: 1px;
-        color: white;
-        cursor: default;
+        font-size: 20px;
       }
 
       .fa-solid {
-        font-size: clamp(25px, 5vw, 40px);
-        padding: 10px;
-        cursor: pointer;
-        color: #ffffff;
-        transition: all 0.3s ease;
-        border-radius: 50%;
-      }
-
-      .fa-solid:hover {
-        transform: scale(1.2);
-      }
-
-      /* ------------------ Hamburger Menu ------------------ */
-      .hamburger-menu {
-        position: absolute;
-        top: 80px;
-        right: 20px;
-        background: #1f2f44;
-        border-radius: 10px;
-        display: none;
-        flex-direction: column;
-        padding: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      }
-
-      .hamburger-menu.active {
-        display: flex;
-      }
-
-      .hamburger-menu a {
-        color: white;
-        text-decoration: none;
-        padding: 8px 12px;
-        border-radius: 6px;
-        transition: background 0.2s;
-      }
-
-      .hamburger-menu a:hover {
-        background: #34d399;
-      }
-
-      /* ------------------ Header Section ------------------ */
-      .lost-found-container {
-        display: flex;
-        justify-content: center;
-        gap: clamp(20px, 6vw, 120px);
-        margin-top: 50px;
-        border-bottom: 1px solid #d1d5db;
-        flex-wrap: wrap;
-      }
-
-      .lost,
-      .found,
-      .user {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      }
-
-      .lost .fa-solid,
-      .found .fa-solid,
-      .user .fa-solid {
-        font-size: clamp(40px, 10vw, 100px);
-        cursor: default;
-        color: #000000;
-        transition: transform 0.3s ease;
-      }
-
-      .lost .fa-solid:hover,
-      .found .fa-solid:hover,
-      .user .fa-solid:hover {
-        transform: scale(1.2);
+        font-size: 25px;
+        padding: 8px;
       }
 
       .userCount,
       .lostCount,
       .foundCount {
-        margin-left: 8px;
-        color: #111827;
-        font-size: clamp(20px, 6vw, 50px);
-        font-weight: 700;
+        font-size: 25px;
       }
 
-     /* ------------------ Verification Cards - Dark Theme ------------------ */
-.verifications {
-  background-color: #1f2f44; /* darker background for container */
-  border-radius: 12px;
-  padding: clamp(15px, 3vw, 20px);
-  margin: 20px;
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25);
-  color: #fff; /* light text */
-  transition: all 0.3s ease;
-}
-
-.verifications .request {
-  font-size: clamp(16px, 3vw, 20px);
-  font-weight: 600;
-  margin-bottom: 15px;
-  color: #dbeafe; /* light blue for title */
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding-bottom: 10px;
-}
-
-#verification-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: flex-start;
-  padding: 10px 0;
-}
-
-.verification-card {
-  background: #2d3a50; /* dark card background */
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-  padding: 15px;
-  width: 220px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  transition: transform 0.2s, box-shadow 0.2s;
-  color: #ffffff; /* light text */
-}
-
-.verification-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-}
-
-.verification-card img {
-  width: 100%;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 10px;
-}
-
-.verification-request {
-  background: rgba(77, 166, 255, 0.1); /* subtle light blue */
-  padding: 10px;
-  border-radius: 8px;
-  font-size: 13px;
-  color: #e0e7ff; /* light text */
-  width: 100%;
-  margin-bottom: 10px;
-  text-align: left;
-}
-
-.btn-group button.accept {
-  background: #4caf50;
-  color: #fff;
-}
-.btn-group button.accept:hover {
-  background: #45a049;
-}
-
-.btn-group button.reject {
-  background: #f44336;
-  color: #fff;
-}
-.btn-group button.reject:hover {
-  background: #da190b;
-}
-
-
-      /* ------------------ Responsive ------------------ */
-      @media (max-width: 768px) {
-        nav {
-          flex-direction: row;
-          height: auto;
-        }
-
-        .nav-right {
-          display: none;
-        }
-
-        .fa-bars {
-          display: block;
-          background-color: #ffffff;
-          color: #333;
-        }
-
-        .lost-found-container {
-          gap: 30px;
-          margin-top: 30px;
-        }
+      .verification-card {
+        width: 180px;
       }
+    }
+  </style>
+</head>
 
-      @media (max-width: 480px) {
-        .lost-found-container {
-          gap: 20px;
-        }
-
-        .name {
-          font-size: 20px;
-        }
-
-        .fa-solid {
-          font-size: 25px;
-          padding: 8px;
-        }
-
-        .userCount,
-        .lostCount,
-        .foundCount {
-          font-size: 25px;
-        }
-
-        .verification-card {
-          width: 160px;
-        }
-      }
-    </style>
-  </head>
-
-  <body>
-    <!-- Navbar -->
-    <nav>
-      <div class="nav-left">
-        <img src="/images/logo.png" class="logo" alt="ClaimConnect logo" />
-        <span class="name">ClaimConnect</span>
-      </div>
-
-      <div class="nav-right">
-        <i class="fa-solid fa-bars" id="hamburger-icon"></i>
-        <div class="hamburger-menu" id="hamburger-menu">
-          <a href="user.html">Registered Users</a>
-          <a href="lost_admin.html">Lost Items</a>
-          <a href="found_admin.html">Found Items</a>
-        </div>
-        <a href="/main/login.html">
-          <i class="fa-solid fa-circle-user" id="profile"></i>
-        </a>
-      </div>
-    </nav>
-
-    <!-- Header -->
-    <header class="lost-found-container">
-      <div class="user">
-        <i class="fa-solid fa-user"></i>
-        <span id="userCount" class="userCount">0</span>
-      </div>
-      <div class="lost">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <span id="lostCount" class="userCount">0</span>
-      </div>
-      <div class="found">
-        <i class="fa-solid fa-box-open"></i>
-        <span id="foundCount" class="userCount">0</span>
-      </div>
-    </header>
-
-    <!-- Verification Requests -->
-    <div class="verifications">
-      <span class="request">Verification Requests</span>
-      <div id="verification-list"></div>
+<body>
+  <!-- Navbar -->
+  <nav>
+    <div class="nav-left">
+      <img src="/images/logo.png" class="logo" alt="ClaimConnect logo" />
+      <span class="name">ClaimConnect</span>
     </div>
 
-    <script>
-      const hamburgerIcon = document.getElementById("hamburger-icon");
-      const hamburgerMenu = document.getElementById("hamburger-menu");
+    <div class="nav-right">
+      <i class="fa-solid fa-bars" id="hamburger-icon"></i>
+      <div class="hamburger-menu" id="hamburger-menu">
+        <a href="user.html">Registered Users</a>
+        <a href="lost_admin.html">Lost Items</a>
+        <a href="found_admin.html">Found Items</a>
+        <a href="analytics.html">Analytics Dashboard</a>
+      </div>
+      <a href="/main/login.html">
+        <i class="fa-solid fa-circle-user" id="profile"></i>
+      </a>
+    </div>
+  </nav>
 
-      hamburgerIcon.addEventListener("click", () => {
-        hamburgerMenu.classList.toggle("active");
-      });
+  <!-- Header -->
+  <header class="lost-found-container">
+    <div class="user">
+      <i class="fa-solid fa-user"></i>
+      <span id="userCount" class="userCount">0</span>
+    </div>
+    <div class="lost">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <span id="lostCount" class="userCount">0</span>
+    </div>
+    <div class="found">
+      <i class="fa-solid fa-box-open"></i>
+      <span id="foundCount" class="userCount">0</span>
+    </div>
+  </header>
 
-      async function loadVerification() {
-        try {
-          const res = await fetch("http://localhost:3000/api/verification");
-          const data = await res.json();
-          const container = document.getElementById("verification-list");
-          container.innerHTML = "";
+  <!-- Verification Requests -->
+  <div class="verifications">
+    <span class="request">Verification Requests</span>
+    <div id="verification-list"></div>
+  </div>
 
-          if (!data || data.length === 0) {
-            container.innerHTML = "<p>No verification requests available.</p>";
-            return;
-          }
+  <script>
+    const hamburgerIcon = document.getElementById("hamburger-icon");
+    const hamburgerMenu = document.getElementById("hamburger-menu");
 
-          data.forEach((row) => {
-            const card = document.createElement("div");
-            card.classList.add("verification-card");
+    hamburgerIcon.addEventListener("click", () => {
+      hamburgerMenu.classList.toggle("active");
+    });
 
-            const imgSrc = row.image
-              ? `http://localhost:3000${row.image}`
-              : "/images/placeholder.png";
+    async function loadVerification() {
+      try {
+        const res = await fetch("http://localhost:3000/api/verification");
+        const data = await res.json();
+        const container = document.getElementById("verification-list");
+        container.innerHTML = "";
 
-            card.innerHTML = `
+        if (!data || data.length === 0) {
+          container.innerHTML = "<p>No verification requests available.</p>";
+          return;
+        }
+
+        data.forEach((row) => {
+          const card = document.createElement("div");
+          card.classList.add("verification-card");
+
+          const imgSrc = row.image
+            ? `http://localhost:3000${row.image}`
+            : "/images/placeholder.png";
+
+          const invoiceHTML = row.invoice_file
+            ? `<a href="http://localhost:3000${row.invoice_file}" target="_blank" class="invoice-link">
+                 <i class="fa-solid fa-file-invoice"></i> View Invoice
+               </a>`
+            : `<span class="no-invoice">No invoice uploaded</span>`;
+
+          card.innerHTML = `
               <img src="${imgSrc}" alt="${row.item_name || "Found Item"}">
-              ${
-                row.username
-                  ? `<div class="verification-request">
-                        <b>Verification Request</b><br>
-                        User: ${row.username}<br>
-                        Description: ${row.description}<br>
-                        Requested: ${row.request_date}
-                      </div>`
-                  : "<i>No verification request</i>"
-              }
+              <div class="verification-request">
+                <b>Verification Request</b><br>
+                User: ${row.username}<br>
+                Description: ${row.description}<br>
+                Requested: ${new Date(row.request_date).toLocaleString()}<br>
+                <div class="invoice-section">${invoiceHTML}</div>
+              </div>
               <div class="btn-group">
                 <button class="accept">Accept</button>
                 <button class="reject">Reject</button>
               </div>
             `;
 
-            const acceptBtn = card.querySelector(".accept");
-            const rejectBtn = card.querySelector(".reject");
+          const acceptBtn = card.querySelector(".accept");
+          const rejectBtn = card.querySelector(".reject");
 
-            acceptBtn.addEventListener("click", async () => {
-              const confirmed = confirm(
-                `Accept verification for "${row.item_name}"?`
+          acceptBtn.addEventListener("click", async () => {
+            const confirmed = confirm(
+              `Accept verification for "${row.item_name}"?`
+            );
+            if (!confirmed) return;
+
+            try {
+              const res = await fetch(
+                `http://localhost:3000/api/verification/${row.verification_id}/accept`,
+                { method: "POST" }
               );
-              if (!confirmed) return;
-
-              try {
-                const res = await fetch(
-                  `http://localhost:3000/api/verification/${row.verification_id}/accept`,
-                  { method: "POST" }
-                );
-                const result = await res.json();
-                alert(result.message);
-                loadVerification();
-              } catch (err) {
-                console.error("Error accepting request:", err);
-                alert("Failed to accept the request.");
-              }
-            });
-
-            rejectBtn.addEventListener("click", async () => {
-              const confirmed = confirm(
-                `Reject verification for "${row.item_name}"?`
-              );
-              if (!confirmed) return;
-
-              try {
-                const res = await fetch(
-                  `http://localhost:3000/api/verification/${row.verification_id}/reject`,
-                  { method: "POST" }
-                );
-                const result = await res.json();
-                alert(result.message);
-                loadVerification();
-              } catch (err) {
-                console.error("Error rejecting request:", err);
-                alert("Failed to reject the request.");
-              }
-            });
-
-            container.appendChild(card);
+              const result = await res.json();
+              alert(result.message);
+              loadVerification();
+            } catch (err) {
+              console.error("Error accepting request:", err);
+              alert("Failed to accept the request.");
+            }
           });
-        } catch (err) {
-          console.error("Error loading verification:", err);
-        }
+
+          rejectBtn.addEventListener("click", async () => {
+            const confirmed = confirm(
+              `Reject verification for "${row.item_name}"?`
+            );
+            if (!confirmed) return;
+
+            try {
+              const res = await fetch(
+                `http://localhost:3000/api/verification/${row.verification_id}/reject`,
+                { method: "POST" }
+              );
+              const result = await res.json();
+              alert(result.message);
+              loadVerification();
+            } catch (err) {
+              console.error("Error rejecting request:", err);
+              alert("Failed to reject the request.");
+            }
+          });
+
+          container.appendChild(card);
+        });
+      } catch (err) {
+        console.error("Error loading verification:", err);
       }
+    }
 
-      loadVerification();
+    loadVerification();
 
-      // Fetch counts
-      fetch("http://localhost:3000/api/user-count")
-        .then((res) => res.json())
-        .then((data) => (document.getElementById("userCount").innerText = data.count))
-        .catch((err) => console.error("Error fetching user count:", err));
+    // Fetch counts
+    fetch("http://localhost:3000/api/user-count")
+      .then((res) => res.json())
+      .then((data) => (document.getElementById("userCount").innerText = data.count))
+      .catch((err) => console.error("Error fetching user count:", err));
 
-      fetch("http://localhost:3000/api/lost-count")
-        .then((res) => res.json())
-        .then((data) => (document.getElementById("lostCount").innerText = data.count))
-        .catch((err) => console.error("Error fetching lost count:", err));
+    fetch("http://localhost:3000/api/lost-count")
+      .then((res) => res.json())
+      .then((data) => (document.getElementById("lostCount").innerText = data.count))
+      .catch((err) => console.error("Error fetching lost count:", err));
 
-      fetch("http://localhost:3000/api/found-count")
-        .then((res) => res.json())
-        .then((data) => (document.getElementById("foundCount").innerText = data.count))
-        .catch((err) => console.error("Error fetching found count:", err));
-    </script>
-  </body>
+    fetch("http://localhost:3000/api/found-count")
+      .then((res) => res.json())
+      .then((data) => (document.getElementById("foundCount").innerText = data.count))
+      .catch((err) => console.error("Error fetching found count:", err));
+  </script>
+</body>
+
 </html>

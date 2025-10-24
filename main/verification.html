@@ -18,13 +18,13 @@
 
 /* ===== Body & Background ===== */
 body {
-  background-color: #f4f6f8; /* light background */
+  background-color: #f4f6f8;
   min-height: 100vh;
   color: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 100px; /* space for navbar */
+  padding-top: 100px;
 }
 
 /* ===== Navbar ===== */
@@ -92,7 +92,7 @@ form {
   margin: 40px auto;
   padding: 30px 25px;
   max-width: 480px;
-  background: #2d3a50; /* dark form background */
+  background: #2d3a50;
   border-radius: 16px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.3);
   display: flex;
@@ -155,12 +155,13 @@ form textarea {
 
 /* File Input */
 form input[type="file"] {
-  padding: 6px 10px;
+  padding: 10px 12px;
   cursor: pointer;
   background: rgba(255,255,255,0.08);
   border-radius: 12px;
   border: 1px solid rgba(255,255,255,0.2);
   color: #fff;
+  font-size: 14px;
 }
 
 /* Submit Button */
@@ -192,7 +193,6 @@ form input[type="file"] {
   }
 }
 </style>
-
 </head>
 <body>
   <nav>
@@ -209,33 +209,47 @@ form input[type="file"] {
     <a href="display_found.html"><i class="fa-solid fa-arrow-left"></i></a>
   </div>
 
-  <form id="verificationForm">
+  <form id="verificationForm" enctype="multipart/form-data">
     <label for="description">Describe the item</label>
-    <textarea id="description" name="item-description"></textarea>
+    <textarea id="description" name="item-description" placeholder="Describe your lost item..."></textarea>
+
+    <label for="invoice">Upload Invoice/Bill (PDF or Image)</label>
+    <input type="file" id="invoice" name="invoice" accept=".pdf, image/*" />
+
     <button type="submit" class="submit-request">Submit</button>
   </form>
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
-   const params = new URLSearchParams(window.location.search);
+const params = new URLSearchParams(window.location.search);
 const username = params.get("username") || localStorage.getItem("username");
 const item_id  = parseInt(params.get("itemId")) || 0;
 const item_name = params.get("item_name") || "Unknown";
-    const form = document.getElementById("verificationForm");
-    const descriptionInput = document.getElementById("description");
 
-    form.addEventListener("submit", async (e) => {
+const form = document.getElementById("verificationForm");
+const descriptionInput = document.getElementById("description");
+const fileInput = document.getElementById("invoice");
+
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const description = descriptionInput.value.trim();
   if (!description) return alert("Please enter a description.");
 
+  const file = fileInput.files[0];
+  if (!file) return alert("Please upload an invoice or bill.");
+
+  const formData = new FormData();
+  formData.append("description", description);
+  formData.append("item_id", item_id);
+  formData.append("item_name", item_name);
+  formData.append("username", username);
+  formData.append("invoice", file);
+
   try {
-    const res = await axios.post("http://localhost:3000/api/verification-request",  {
-      description,
-      item_id,
-      item_name,
-      username
-    });
+    const res = await axios.post("http://localhost:3000/api/verification-request",
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
     alert(res.data.message || "Request submitted successfully!");
     form.reset();
   } catch (err) {
