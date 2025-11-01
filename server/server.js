@@ -42,8 +42,8 @@ if (!fs.existsSync(uploadPath)) fs.mkdirSync(uploadPath, { recursive: true });
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "Vaidehi@12",
-  database: "claimconnect",
+  password: "",
+  database: "",
 });
 
 db.connect((err) => {
