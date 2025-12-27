@@ -20,7 +20,7 @@ app.use(bodyParser.json({ limit: "10mb" }));
 
 // ---------------- MongoDB Atlas ----------------
 const MONGO_URI = process.env.MONGO_URI || 
-"mongodb+srv://user_name:passwordloq@cluster0.ire5o4d.mongodb.net/?appName=Cluster0";
+"mongodb+srv://tvaidehi305_db_user:yvRx0YyOSWbvNloq@cluster0.ire5o4d.mongodb.net/?appName=Cluster0";
 
 mongoose.connect(MONGO_URI)
   .then(() => console.log("✅ MongoDB Atlas Connected"))
