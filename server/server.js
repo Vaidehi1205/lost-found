@@ -16,11 +16,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
+<<<<<<< HEAD
 /* -------------------- DATABASE -------------------- */
 if (!process.env.MONGO_URI) {
   console.error("❌ MONGO_URI missing in .env");
   process.exit(1);
 }
+=======
+// ---------------- MongoDB Atlas ----------------
+const MONGO_URI = process.env.MONGO_URI || 
+"mongodb+srv://user_name:user_passwordloq@cluster0.ire5o4d.mongodb.net/?appName=Cluster0";
+>>>>>>> 6b766797b776823c5e95d02c0b45384423f3f76d
 
 mongoose
   .connect(process.env.MONGO_URI)
