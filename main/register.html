@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,6 +17,7 @@
       align-items: center;
       height: 100vh;
     }
+
     .login-form {
       background: #e1e5ea;
       padding: 40px;
@@ -25,16 +27,19 @@
       text-align: center;
       box-sizing: border-box;
     }
+
     .login-title {
       margin-bottom: 20px;
       font-size: 26px;
       font-weight: bold;
       color: #222;
     }
+
     .input-box {
       position: relative;
       margin: 15px 0;
     }
+
     .input-box input {
       width: 100%;
       padding: 12px 40px;
@@ -44,6 +49,7 @@
       font-size: 14px;
       box-sizing: border-box;
     }
+
     .input-box i {
       position: absolute;
       left: 12px;
@@ -52,6 +58,7 @@
       color: #555;
       font-size: 18px;
     }
+
     .error-msg {
       color: red;
       font-size: 13px;
@@ -59,6 +66,7 @@
       text-align: left;
       padding-left: 5px;
     }
+
     .login-btn {
       width: 100%;
       padding: 12px;
@@ -71,19 +79,28 @@
       cursor: pointer;
       transition: background 0.3s ease;
     }
-    .login-btn:hover { background: #444; }
+
+    .login-btn:hover {
+      background: #444;
+    }
+
     .register {
       margin-top: 15px;
       font-size: 14px;
     }
+
     .register a {
       color: #000;
       text-decoration: none;
       font-weight: bold;
     }
-    .register a:hover { text-decoration: underline; }
+
+    .register a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
+
 <body>
   <form class="login-form" onsubmit="return handleRegister(event)">
     <h1 class="login-title">Register</h1>
@@ -91,9 +108,8 @@
     <!-- Full Name -->
     <div class="input-box">
       <i class="bx bxs-user"></i>
-      <input type="text" id="fullname" placeholder="Full Name"
-             pattern="[A-Za-z\s]+" required
-             title="Only alphabets and spaces allowed" />
+      <input type="text" id="fullname" placeholder="Full Name" pattern="[A-Za-z\s]+" required
+        title="Only alphabets and spaces allowed" />
       <div id="nameError" class="error-msg"></div>
     </div>
 
@@ -106,9 +122,8 @@
     <!-- Phone -->
     <div class="input-box">
       <i class="bx bxs-phone"></i>
-      <input type="tel" id="phone" placeholder="Mobile Number"
-             maxlength="10" pattern="[0-9]{10}" required
-             title="Enter a valid 10 digit number" />
+      <input type="tel" id="phone" placeholder="Mobile Number" maxlength="10" pattern="[0-9]{10}" required
+        title="Enter a valid 10 digit number" />
       <div id="phoneError" class="error-msg"></div>
     </div>
 
@@ -130,7 +145,6 @@
       Already have an account? <a href="login.html">Login</a>
     </p>
   </form>
-
   <script>
     async function handleRegister(event) {
       event.preventDefault();
@@ -141,46 +155,39 @@
       const password = document.getElementById("password").value;
       const confirmPassword = document.getElementById("confirmPassword").value;
 
-      // Clear previous errors
       document.getElementById("nameError").textContent = "";
       document.getElementById("phoneError").textContent = "";
 
-      let valid = true;
-
-      // ✅ Validate Name (only letters & spaces)
       if (!/^[A-Za-z\s]+$/.test(fullname)) {
-        document.getElementById("nameError").textContent = "Name must contain only alphabets.";
-        valid = false;
+        document.getElementById("nameError").textContent = "Only alphabets allowed";
+        return;
       }
 
-      // ✅ Validate Phone (only numbers & exactly 10 digits)
       if (!/^[0-9]{10}$/.test(phone)) {
-        document.getElementById("phoneError").textContent = "Enter a valid 10 digit number.";
-        valid = false;
+        document.getElementById("phoneError").textContent = "Invalid phone number";
+        return;
       }
 
-      // ✅ Password match
       if (password !== confirmPassword) {
-        alert("Passwords do not match!");
-        valid = false;
+        alert("Passwords do not match");
+        return;
       }
 
-      if (!valid) return;
-
-      // Send data to backend
       const response = await fetch("http://localhost:3000/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fullname, email, phone, password }),
+        body: JSON.stringify({ fullname, email, phone, password })
       });
 
       const data = await response.json();
       alert(data.message);
 
-      if (data.message === "Registration successful!") {
-        window.location.href = "/main/login.html";
+      if (response.ok) {
+        window.location.href = "login.html";
       }
     }
   </script>
+
 </body>
+
 </html>
